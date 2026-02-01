@@ -1,0 +1,83 @@
+
+
+<?php $__env->startSection('title', 'Tambah Kategori'); ?>
+<?php $__env->startSection('page_title', 'Tambah Kategori Baru'); ?>
+
+<?php $__env->startSection('content'); ?>
+<div style="width: 76vw; min-height: 100vh; display: flex; flex-direction: column; background: #f8fafc; margin: 0; padding: 0; overflow-x: hidden;">
+  <div style="flex: 1; display: flex; flex-direction: column; padding: 20px 0; margin: 0;">
+    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 24px; padding: 0;">Tambah Kategori Baru</h1>
+
+    <form method="POST" action="<?php echo e(route('teacher.categories.store')); ?>" enctype="multipart/form-data"
+      style="margin: 0; padding: 0; width: 100%; box-sizing: border-box;">
+
+      <?php echo csrf_field(); ?>
+
+      <?php if($errors->any()): ?>
+        <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <strong style="color: #dc2626;">Error:</strong>
+            <ul style="margin: 8px 0 0; padding-left: 20px;">
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li style="color: #dc2626;"><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </ul>
+        </div>
+      <?php endif; ?>
+
+      <div style="display: flex; flex-direction: column; gap: 18px; width: 100%;">
+
+        
+        <div style="width: 100% !important; margin: 0;">
+          <label style="display: block; margin-bottom: 8px; color: #1e293b; font-weight: 600; font-size: 14px;">Nama Kategori</label>
+          <input type="text" name="name" value="<?php echo e(old('name')); ?>" required
+            style="width: 100% !important; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; box-sizing: border-box;"
+            placeholder="Contoh: Fiksi, Non-Fiksi, Teknologi">
+          <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+            <p style="color: #dc2626; font-size: 12px; margin-top: 4px;"><?php echo e($message); ?></p>
+          <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+
+        
+        <div style="width: 100% !important; margin: 0;">
+          <label style="display: block; margin-bottom: 8px; color: #1e293b; font-weight: 600; font-size: 14px;">Deskripsi</label>
+          <textarea name="description" 
+            style="width: 100% !important; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; resize: vertical; min-height: 100px; box-sizing: border-box;"
+            placeholder="Deskripsi kategori (opsional)"><?php echo e(old('description')); ?></textarea>
+          <?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+            <p style="color: #dc2626; font-size: 12px; margin-top: 4px;"><?php echo e($message); ?></p>
+          <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+
+      </div>
+
+      <!-- BUTTON MELEBAR PENUH -->
+      <div style="display: flex; gap: 12px; margin-top: 32px;">
+        <button type="submit" style="flex: 1; padding: 12px 16px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">
+          Simpan Kategori
+        </button>
+        <a href="<?php echo e(route('teacher.categories.index')); ?>"
+           style="flex: 1; padding: 12px 16px; background: #e5e7eb; color: #0f172a; text-align: center; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+          Batal
+        </a>
+      </div>
+
+    </form>
+  </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.teacher', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\ukk-peminjaman-buku\resources\views/teacher/categories/create.blade.php ENDPATH**/ ?>
