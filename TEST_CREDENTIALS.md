@@ -2,11 +2,11 @@
 
 Berikut adalah akun yang tersedia untuk testing setelah menjalankan seeder:
 
-## Akun Guru (Teacher)
-- **Email**: `guru@test.com`
+## Akun Admin (sebelumnya: Guru/Teacher)
+- **Email**: `admin@gmail.com` atau `admin@test.com`
 - **Password**: `password`
-- **Role**: Teacher
-- **Akses**: Dashboard Guru, Manajemen Buku, Pengarang, Kategori, Penerbit, Peminjaman
+- **Role**: Admin
+- **Akses**: Dashboard Admin, Manajemen Buku, Pengarang, Kategori, Penerbit, Peminjaman
 
 ## Akun Siswa (Student)
 - **Email**: `siswa@test.com`

@@ -89,6 +89,56 @@
     </div>
 
     
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:32px; align-items: center;">
+
+        <!-- Pengembalian Menunggu Verifikasi (kiri) -->
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #fcd34d; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-size: 32px; margin-bottom: 12px;">📦</div>
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #b45309;">Buku Menunggu Verifikasi</h3>
+            <div style="font-size: 28px; font-weight: 700; color: #92400e; margin-bottom: 12px;"><?php echo e($pendingReturns); ?></div>
+            <p style="margin: 0; font-size: 13px; color: #b45309;">
+                Buku yang Anda minta untuk dikembalikan sedang menunggu persetujuan dari guru/admin.
+            </p>
+            <?php if($pendingReturns > 0): ?>
+            <a href="<?php echo e(route('student.loans.index')); ?>" style="display: inline-block; margin-top: 12px; background: #b45309; color: #fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">
+                Lihat Detail
+            </a>
+            <?php endif; ?>
+        </div>
+
+        <!-- Denda Belum Dibayar (tengah) -->
+        <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 1px solid #fca5a5; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); justify-self: center; display:flex; flex-direction:column; align-items:center; text-align:center;">
+            <div style="font-size: 32px; margin-bottom: 12px;">💰</div>
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #991b1b;">Denda Belum Dibayar</h3>
+            <div style="font-size: 28px; font-weight: 700; color: #dc2626; margin-bottom: 12px;"><?php echo e($unpaidFines); ?></div>
+            <p style="margin: 0; font-size: 13px; color: #991b1b;">
+                Anda memiliki denda yang belum dibayar. Segera lakukan pembayaran.
+            </p>
+            <?php if($unpaidFines > 0): ?>
+            <a href="<?php echo e(route('student.fines.index')); ?>" style="display: inline-block; margin-top: 12px; background: #dc2626; color: #fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">
+                Bayar Sekarang
+            </a>
+            <?php endif; ?>
+        </div>
+
+        <!-- Denda Menunggu Persetujuan (kanan) -->
+        <div style="background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 1px solid #fb923c; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); justify-self: end;">
+            <div style="font-size: 32px; margin-bottom: 12px;">⏳</div>
+            <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700; color: #92400e;">Denda Menunggu Persetujuan</h3>
+            <div style="font-size: 28px; font-weight: 700; color: #92400e; margin-bottom: 12px;"><?php echo e($pendingPaymentFines); ?></div>
+            <p style="margin: 0; font-size: 13px; color: #92400e;">
+                Permintaan pembayaran denda Anda sedang dalam proses verifikasi dari guru/admin.
+            </p>
+            <?php if($pendingPaymentFines > 0): ?>
+            <a href="<?php echo e(route('student.fines.index')); ?>" style="display: inline-block; margin-top: 12px; background: #92400e; color: #fff; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">
+                Lihat Detail
+            </a>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
+    
     <?php if($loans->count() > 0): ?>
     <div class="box" style="margin-bottom: 32px;">
         <h3>Buku yang Sedang Dipinjam</h3>

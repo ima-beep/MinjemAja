@@ -29,8 +29,8 @@ class FineController extends Controller
             return view('student.fines.index', compact('fines'));
         }
 
-        // Otherwise show teacher view with all fines
-        return view('teacher.fines.index', compact('fines'));
+        // Otherwise show admin view with all fines
+        return view('admin.fines.index', compact('fines'));
     }
 
     public function show($id)
@@ -39,7 +39,7 @@ class FineController extends Controller
         $daysDue = $loan->getDaysDue();
         $fineAmount = $daysDue * 5000;
 
-        return view('teacher.fines.show', compact('loan', 'daysDue', 'fineAmount'));
+        return view('admin.fines.show', compact('loan', 'daysDue', 'fineAmount'));
     }
 
     public function edit($id)
@@ -48,7 +48,7 @@ class FineController extends Controller
         $daysDue = $loan->getDaysDue();
         $fineAmount = $daysDue * 5000;
 
-        return view('teacher.fines.edit', compact('loan', 'daysDue', 'fineAmount'));
+        return view('admin.fines.edit', compact('loan', 'daysDue', 'fineAmount'));
     }
 
     public function update(Request $request, $id)
@@ -87,15 +87,41 @@ class FineController extends Controller
     public function pay($id)
     {
         $loan = Loan::findOrFail($id);
+
+        $loan->update([
+            'fine_payment_request_date' => now(),
+            'fine_status' => 'pending_payment',
+        ]);
+
+        return redirect()->route('student.fines.index')
+            ->with('success', 'Permintaan pembayaran denda telah dikirim. Menunggu persetujuan dari admin.');
+    }
+
+    public function approveFinePayment($id)
+    {
+        $loan = Loan::findOrFail($id);
         $fineAmount = $loan->getDaysDue() * 5000;
 
         $loan->update([
             'fine_amount_paid' => $fineAmount,
             'fine_payment_date' => now(),
+            'fine_status' => 'approved_payment',
         ]);
 
-        return redirect()->route('student.fines.index')
-            ->with('success', 'Denda telah dibayar. Status berubah menjadi Lunas.');
+        return redirect()->route('admin.fines.index')
+            ->with('success', 'Pembayaran denda telah disetujui.');
+    }
+
+    public function rejectFinePayment($id)
+    {
+        $loan = Loan::findOrFail($id);
+
+        $loan->update([
+            'fine_payment_request_date' => null,
+            'fine_status' => 'rejected_payment',
+        ]);
+
+        return redirect()->route('admin.fines.index')
+            ->with('success', 'Permintaan pembayaran denda telah ditolak.');
     }
 }
-

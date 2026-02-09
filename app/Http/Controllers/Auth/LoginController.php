@@ -20,7 +20,7 @@ class LoginController extends Controller
         $validated = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required'],
-            'role'     => ['required', 'in:teacher,student'],
+            'role'     => ['required', 'in:admin,student'],
         ]);
 
         $credentials = [
@@ -57,8 +57,8 @@ class LoginController extends Controller
         $request->session()->regenerate();
 
         // Redirect berdasarkan ROLE dari DATABASE
-        if ($user->role === 'teacher') {
-            return redirect()->route('teacher.dashboard');
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
         if ($user->role === 'student') {
@@ -90,6 +90,8 @@ class LoginController extends Controller
         $validated = $request->validate([
             'nisn'     => ['required', 'string', 'max:20', 'unique:users,nisn'],
             'name'     => ['required', 'string', 'max:255'],
+            'kelas'    => ['required', 'in:X,XI,XII'],
+            'jurusan'  => ['required', 'in:TSM 1,TSM 2,TSM 3,TKR 1,TKR 2,TKR 3,ATPH 1,ATPH 2,APT 1,APT 2,DKV 1,DKV 2,DKV 3,TKJ 1,TKJ 2,RPL 1,RPL 2'],
             'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], [
@@ -98,10 +100,17 @@ class LoginController extends Controller
             'password.confirmed' => 'Password tidak cocok.',
         ]);
 
+        // Additional server-side rule: DKV 3 only allowed for kelas X
+        if (isset($validated['jurusan']) && $validated['jurusan'] === 'DKV 3' && ($validated['kelas'] ?? '') !== 'X') {
+            return back()->withErrors(['jurusan' => 'DKV 3 hanya dapat dipilih oleh siswa kelas X'])->withInput();
+        }
+
         // Create user dengan role 'student'
         User::create([
             'nisn'     => $validated['nisn'],
             'name'     => $validated['name'],
+            'kelas'    => $validated['kelas'],
+            'jurusan'  => $validated['jurusan'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role'     => 'student',

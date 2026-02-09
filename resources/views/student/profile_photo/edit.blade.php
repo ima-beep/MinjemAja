@@ -22,9 +22,14 @@
                     <p style="margin:0 0 4px;color:#64748b;font-size:12px;font-weight:600;">NISN</p>
                     <p style="margin:0;font-size:14px;font-weight:600;">{{ Auth::user()->nisn ?? '-' }}</p>
                 </div>
-                <div style="grid-column:1/-1;">
+
+                <div>
                     <p style="margin:0 0 4px;color:#64748b;font-size:12px;font-weight:600;">Email</p>
                     <p style="margin:0;font-size:14px;font-weight:600;">{{ Auth::user()->email }}</p>
+                </div>
+                <div>
+                    <p style="margin:0 0 4px;color:#64748b;font-size:12px;font-weight:600;">Kelas/Jurusan</p>
+                    <p style="margin:0;font-size:14px;font-weight:600;">{{ Auth::user()->kelas ?? '-' }}</p>
                 </div>
             </div>
         </div>

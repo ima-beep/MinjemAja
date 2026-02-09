@@ -27,25 +27,29 @@
     </div>
     <div style="padding: 24px;">
         <nav style="display: flex; flex-direction: column; gap: 8px;" class="sidebar-nav">
-            @if(Auth::user()->role === 'teacher')
-                <!-- MENU GURU -->
-                <a href="{{ route('teacher.dashboard') }}" class="{{ request()->routeIs('teacher.dashboard') ? 'active' : '' }}">
+            @if(Auth::user()->role === 'admin')
+                <!-- MENU ADMIN (sebelumnya: GURU) -->
+                <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <span style="font-size: 18px;">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('books.index') }}" class="{{ request()->routeIs('books.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.*') ? 'active' : '' }}">
                     <span style="font-size: 18px;">📖</span>
                     <span>Kelola Buku</span>
                 </a>
-                <a href="{{ route('publishers.index') }}" class="{{ request()->routeIs('publishers.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.publishers.index') }}" class="{{ request()->routeIs('admin.publishers.*') ? 'active' : '' }}">
                     <span style="font-size: 18px;">🏢</span>
                     <span>Penerbit</span>
                 </a>
-                <a href="{{ route('authors.index') }}" class="{{ request()->routeIs('authors.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.reviews.index') }}" class="{{ request()->routeIs('admin.reviews.*') || request()->routeIs('admin.reviews.index') ? 'active' : '' }}">
+                    <span style="font-size: 18px;">⭐</span>
+                    <span>Rating / Review</span>
+                </a>
+                <a href="{{ route('admin.authors.index') }}" class="{{ request()->routeIs('admin.authors.*') ? 'active' : '' }}">
                     <span style="font-size: 18px;">✍️</span>
                     <span>Pengarang</span>
                 </a>
-                <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                     <span style="font-size: 18px;">🏷️</span>
                     <span>Kategori</span>
                 </a>
@@ -66,6 +70,10 @@
                 <a href="{{ route('student.fines.index') }}" class="{{ request()->routeIs('student.fines.*') ? 'active' : '' }}">
                     <span style="font-size: 18px;">💰</span>
                     <span>Denda</span>
+                </a>
+                <a href="{{ route('student.reviews.index') }}" class="{{ request()->routeIs('student.reviews.*') ? 'active' : '' }}">
+                    <span style="font-size: 18px;">⭐</span>
+                    <span>Rating / Review</span>
                 </a>
             @endif
         </nav>

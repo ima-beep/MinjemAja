@@ -71,6 +71,32 @@
             <p style="margin: 0; line-height: 1.6; color: #475569;"><?php echo e($book->description); ?></p>
         </div>
         <?php endif; ?>
+        
+        
+        <div style="margin-top: 16px; border-top: 1px solid #e2e8f0; padding-top: 24px;">
+            <h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 700;">Ulasan & Rating</h3>
+
+            <?php if(isset($averageRating) && $averageRating): ?>
+                <p style="margin: 0 0 12px; font-weight: 600; color: #1f2937;">Rata-rata: <?php echo e(number_format($averageRating, 1)); ?> ⭐</p>
+            <?php else: ?>
+                <p style="margin: 0 0 12px; color: #6b7280;">Belum ada rating.</p>
+            <?php endif; ?>
+
+            <?php if(isset($reviews) && $reviews->isNotEmpty()): ?>
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                    <?php $__currentLoopData = $reviews; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $rev): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div style="background:#fff; border:1px solid #e6eef8; padding:12px; border-radius:8px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <div style="font-weight:700; color:#0f172a;"><?php echo e($rev->user?->name ?? 'Anonim'); ?></div>
+                                <div style="background:#fef3c7; color:#92400e; padding:4px 8px; border-radius:6px; font-weight:700;"><?php echo e($rev->rating); ?> ⭐</div>
+                            </div>
+                            <div style="color:#475569; line-height:1.6;"><?php echo e($rev->review ?? '-'); ?></div>
+                            <div style="margin-top:8px; font-size:12px; color:#9ca3af;"><?php echo e($rev->created_at->format('d M Y')); ?></div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 
     <?php if(session('success')): ?>
@@ -79,6 +105,7 @@
 
         </div>
     <?php endif; ?>
+
 
     <?php if(session('error')): ?>
         <div style="background: #fee2e2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; color: #991b1b;">

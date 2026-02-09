@@ -19,9 +19,9 @@ class DashboardController extends Controller
 
         $user = Auth::user();
 
-        // Jika guru, arahkan ke teacher dashboard
-        if ($user->role === 'teacher') {
-            return redirect()->route('teacher.dashboard');
+        // Jika admin (sebelumnya: guru), arahkan ke admin dashboard
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard');
         }
 
         // Jika siswa, arahkan ke siswa dashboard

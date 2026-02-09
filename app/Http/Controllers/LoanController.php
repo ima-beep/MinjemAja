@@ -12,15 +12,20 @@ class LoanController extends Controller
 {
     /**
      * HALAMAN "PINJAMAN"
-     * (GURU: TAMPILKAN SEMUA PINJAMAN, SISWA: TAMPILKAN PINJAMAN MEREKA)
+     * (ADMIN: TAMPILKAN SEMUA PINJAMAN, SISWA: TAMPILKAN PINJAMAN MEREKA)
      */
     public function index()
     {
         $user = Auth::user();
 
-        // Jika teacher, tampilkan semua
-        if ($user->role === 'teacher') {
+        // Jika admin (sebelumnya: teacher), tampilkan semua
+        if ($user->role === 'admin') {
             $activeLoans = Loan::where('status', 'active')
+                ->with(['book.author', 'book.publisher'])
+                ->latest()
+                ->get();
+
+            $pendingReturns = Loan::where('status', 'pending_return')
                 ->with(['book.author', 'book.publisher'])
                 ->latest()
                 ->get();
@@ -30,12 +35,18 @@ class LoanController extends Controller
                 ->latest()
                 ->paginate(10);
 
-            return view('teacher.loans.index', compact('activeLoans', 'returnedLoans'));
+            return view('admin.loans.index', compact('activeLoans', 'pendingReturns', 'returnedLoans'));
         }
 
         // Jika student, tampilkan pinjaman mereka berdasarkan email
         $activeLoans = Loan::where('guest_email', $user->email)
             ->where('status', 'active')
+            ->with(['book.author', 'book.publisher'])
+            ->latest()
+            ->get();
+
+        $pendingReturns = Loan::where('guest_email', $user->email)
+            ->where('status', 'pending_return')
             ->with(['book.author', 'book.publisher'])
             ->latest()
             ->get();
@@ -46,7 +57,7 @@ class LoanController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('student.loans.index', compact('activeLoans', 'returnedLoans'));
+        return view('student.loans.index', compact('activeLoans', 'pendingReturns', 'returnedLoans'));
     }
 
     /**
@@ -119,7 +130,7 @@ class LoanController extends Controller
     }
 
     /**
-     * KEMBALIKAN BUKU (TEACHER ONLY)
+     * KEMBALIKAN BUKU (ADMIN ONLY)
      */
     public function return(Loan $loan)
     {

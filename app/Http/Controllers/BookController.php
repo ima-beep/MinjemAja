@@ -24,15 +24,15 @@ class BookController extends Controller
             ]);
         }
         
-        // Otherwise, show teacher books view
-        return view('teacher.books.index', [
+        // Otherwise, show admin books view
+            return view('admin.books.index', [
             'books' => Book::latest()->get()
         ]);
     }
 
     public function create()
     {
-        return view('teacher.books.create', [
+        return view('admin.books.create', [
             'authors' => Author::orderBy('name')->get(),
             'publishers' => Publisher::orderBy('name')->get(),
             'categories' => Category::orderBy('name')->get(),
@@ -67,7 +67,7 @@ class BookController extends Controller
 
         Book::create($data);
 
-        return redirect()->route('teacher.books.index')
+        return redirect()->route('admin.books.index')
             ->with('success', 'Buku berhasil ditambahkan');
     }
 
@@ -82,24 +82,33 @@ class BookController extends Controller
                 ->where('book_id', $book->id)
                 ->where('status', 'active')
                 ->first();
-            
+            // Load reviews and average rating
+            $reviews = \App\Models\Review::with('user')
+                ->where('book_id', $book->id)
+                ->latest()
+                ->get();
+
+            $averageRating = $reviews->avg('rating');
+
             return view('student.books.show', [
                 'book' => $book,
                 'loan' => $loan,
-                'isPublicView' => false
+                'isPublicView' => false,
+                'reviews' => $reviews,
+                'averageRating' => $averageRating,
             ]);
         }
         
-        // For teachers, just show book details
-        return view('teacher.books.show', [
+        // For admin, just show book details
+            return view('admin.books.show', [
             'book' => $book
         ]);
     }
 
     public function edit(Book $book)
     {
-        return view('teacher.books.edit', [
-            'book' => $book,
+        return view('admin.books.edit', [
+              'book' => $book,
             'authors' => Author::orderBy('name')->get(),
             'publishers' => Publisher::orderBy('name')->get(),
             'categories' => Category::orderBy('name')->get(),
@@ -139,7 +148,7 @@ class BookController extends Controller
 
         $book->update($data);
 
-        return redirect()->route('teacher.books.index')
+        return redirect()->route('admin.books.index')
             ->with('success', 'Buku berhasil diperbarui');
     }
 
@@ -147,7 +156,7 @@ class BookController extends Controller
     {
         $book->delete();
 
-        return redirect()->route('teacher.books.index')
+        return redirect()->route('admin.books.index')
             ->with('success', 'Buku berhasil dihapus');
     }
 
@@ -167,6 +176,9 @@ class BookController extends Controller
         if ($book->stok <= 0) {
             return back()->with('error', 'Buku tidak tersedia untuk dipinjam.');
         }
+        // Prepare timestamps so they match the stored loan
+        $loanTime = now();
+        $returnTime = $loanTime->copy()->addMinutes(5);
 
         // Create loan with guest info from authenticated user
         Loan::create([
@@ -176,26 +188,55 @@ class BookController extends Controller
             'guest_class' => 'Student',
             'guest_email' => $user->email,
             'guest_phone' => $user->phone ?? '',
-            'loan_date' => now(),
-            'return_date' => now()->addDays(7),
+            'loan_date' => $loanTime,
+            'return_date' => $returnTime,
             'status' => 'active',
         ]);
 
         // Decrease stock
         $book->decrement('stok');
 
-        return back()->with('success', 'Buku berhasil dipinjam. Durasi peminjaman 7 hari.');
+        // Flash success message and include formatted borrow/return times for notification
+        return back()
+            ->with('success', 'Buku berhasil dipinjam. Durasi peminjaman 5 menit.')
+            ->with('borrow_time', $loanTime->format('d M Y H:i'))
+            ->with('return_time', $returnTime->format('d M Y H:i'));
     }
 
     /**
      * Return a book (authenticated user)
+     * Creates a return request for admin/teacher approval
      */
     public function returnBook($loanId)
     {
         $loan = Loan::findOrFail($loanId);
 
         if ($loan->status !== 'active') {
-            return back()->with('error', 'Peminjaman ini sudah dikembalikan.');
+            return back()->with('error', 'Peminjaman ini sudah diproses atau dikembalikan.');
+        }
+
+        $loan->update([
+            'status' => 'pending_return',
+            'return_request_date' => now(),
+        ]);
+
+        return back()->with('success', 'Permintaan pengembalian buku telah dikirim ke admin. Menunggu persetujuan.');
+    }
+
+    /**
+     * Approve return request (admin/teacher only)
+     */
+    public function approveReturn($loanId)
+    {
+        // Authorization: only admin
+        if (Auth::user()->role !== 'admin') {
+            return back()->with('error', 'Anda tidak memiliki akses untuk menyetujui pengembalian.');
+        }
+
+        $loan = Loan::findOrFail($loanId);
+
+        if ($loan->status !== 'pending_return') {
+            return back()->with('error', 'Status peminjaman tidak valid untuk persetujuan.');
         }
 
         $loan->update([
@@ -206,7 +247,31 @@ class BookController extends Controller
         // Increase stock
         $loan->book->increment('stok');
 
-        return back()->with('success', 'Buku berhasil dikembalikan!');
+        return back()->with('success', 'Pengembalian buku telah disetujui dan buku dikembalikan ke stok.');
     }
 
+    /**
+     * Reject return request (admin/teacher only)
+     */
+    public function rejectReturn($loanId)
+    {
+        // Authorization: only admin
+        if (Auth::user()->role !== 'admin') {
+            return back()->with('error', 'Anda tidak memiliki akses untuk menolak pengembalian.');
+        }
+
+        $loan = Loan::findOrFail($loanId);
+
+        if ($loan->status !== 'pending_return') {
+            return back()->with('error', 'Status peminjaman tidak valid untuk penolakan.');
+        }
+
+        $loan->update([
+            'status' => 'active',
+            'return_request_date' => null,
+        ]);
+
+        return back()->with('success', 'Permintaan pengembalian ditolak. Status kembali menjadi aktif.');
+    }
 }
+

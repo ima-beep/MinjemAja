@@ -9,14 +9,14 @@ class AuthorController extends Controller
 {
     public function index()
     {
-        return view('teacher.authors.index', [
+        return view('admin.authors.index', [
             'authors' => Author::with('books')->orderBy('name')->get(),
         ]);
     }
 
     public function create()
     {
-        return view('teacher.authors.create');
+        return view('admin.authors.create');
     }
 
     public function store(Request $request)
@@ -30,13 +30,13 @@ class AuthorController extends Controller
 
         Author::create($data);
 
-        return redirect()->route('teacher.authors.index')
+        return redirect()->route('admin.authors.index')
             ->with('success', 'Pengarang berhasil ditambahkan');
     }
 
     public function edit(Author $author)
     {
-        return view('teacher.authors.edit', [
+        return view('admin.authors.edit', [
             'author' => $author,
         ]);
     }
@@ -52,7 +52,7 @@ class AuthorController extends Controller
 
         $author->update($data);
 
-        return redirect()->route('teacher.authors.index')
+        return redirect()->route('admin.authors.index')
             ->with('success', 'Pengarang berhasil diperbarui');
     }
 
@@ -60,13 +60,13 @@ class AuthorController extends Controller
     {
         // Check if author has books
         if ($author->books()->count() > 0) {
-            return redirect()->route('teacher.authors.index')
+            return redirect()->route('admin.authors.index')
                 ->with('error', 'Pengarang tidak dapat dihapus karena masih memiliki buku');
         }
 
         $author->delete();
 
-        return redirect()->route('teacher.authors.index')
+        return redirect()->route('admin.authors.index')
             ->with('success', 'Pengarang berhasil dihapus');
     }
 }

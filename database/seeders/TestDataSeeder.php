@@ -30,10 +30,10 @@ class TestDataSeeder extends Seeder
 
         // Create users
         User::create([
-            'name' => 'Guru Test',
-            'email' => 'guru@test.com',
+            'name' => 'Admin Test',
+            'email' => 'admin@test.com',
             'password' => Hash::make('password'),
-            'role' => 'teacher',
+            'role' => 'admin',
         ]);
 
         User::create([

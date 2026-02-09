@@ -13,12 +13,12 @@ class PublisherController extends Controller
             'books.author'
         ])->orderBy('name')->get();
 
-        return view('teacher.publishers.index', compact('publishers'));
+        return view('admin.publishers.index', compact('publishers'));
     }
 
     public function create()
     {
-        return view('teacher.publishers.create');
+        return view('admin.publishers.create');
     }
 
     public function store(Request $request)
@@ -32,13 +32,13 @@ class PublisherController extends Controller
 
         Publisher::create($data);
 
-        return redirect()->route('teacher.publishers.index')
+        return redirect()->route('admin.publishers.index')
             ->with('success', 'Penerbit berhasil ditambahkan');
     }
 
     public function edit(Publisher $publisher)
     {
-        return view('teacher.publishers.edit', compact('publisher'));
+        return view('admin.publishers.edit', compact('publisher'));
     }
 
     public function update(Request $request, Publisher $publisher)
@@ -52,20 +52,20 @@ class PublisherController extends Controller
 
         $publisher->update($data);
 
-        return redirect()->route('teacher.publishers.index')
+        return redirect()->route('admin.publishers.index')
             ->with('success', 'Penerbit berhasil diperbarui');
     }
 
     public function destroy(Publisher $publisher)
     {
         if ($publisher->books()->count() > 0) {
-            return redirect()->route('teacher.publishers.index')
+            return redirect()->route('admin.publishers.index')
                 ->with('error', 'Penerbit tidak dapat dihapus karena masih memiliki buku');
         }
 
         $publisher->delete();
 
-        return redirect()->route('teacher.publishers.index')
+        return redirect()->route('admin.publishers.index')
             ->with('success', 'Penerbit berhasil dihapus');
     }
 }

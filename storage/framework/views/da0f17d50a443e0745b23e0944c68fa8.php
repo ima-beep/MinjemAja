@@ -172,18 +172,18 @@
     <?php endif; ?>
 
     <div class="tabs">
-        <button type="button" class="tab-button active" data-tab="guru-form">👨‍🏫 Guru</button>
+        <button type="button" class="tab-button active" data-tab="guru-form">👨‍🏫 Admin</button>
         <button type="button" class="tab-button" data-tab="siswa-form">👨‍🎓 Siswa</button>
     </div>
 
-    <!-- FORM GURU -->
+    <!-- FORM ADMIN (sebelumnya: GURU) -->
     <form id="guru-form" method="POST" action="<?php echo e(route('login')); ?>" class="active">
         <?php echo csrf_field(); ?>
-        <input type="hidden" name="role" value="teacher">
+        <input type="hidden" name="role" value="admin">
 
         <div class="form-group">
-            <label>Email Guru</label>
-            <input type="email" name="email" value="guru@gmail.com" required>
+            <label>Email Admin</label>
+            <input type="email" name="email" value="admin@gmail.com" required>
         </div>
 
         <div class="form-group">

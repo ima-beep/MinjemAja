@@ -73,6 +73,38 @@
     </div>
 
     
+    <?php if(isset($pendingReturns) && $pendingReturns->count() > 0): ?>
+    <div style="background: #fff; border-radius: 10px; margin: 0 0 16px 0; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.05); border: 1px solid #fcd34d;">
+        <h3 style="margin: 0 0 12px; color: #92400e; font-size: 15px; font-weight: 700; border-bottom: 2px solid #f59e0b; padding-bottom: 8px;">
+            ⏳ Pengembalian Menunggu Persetujuan (<?php echo e($pendingReturns->count()); ?>)
+        </h3>
+
+        <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+                <tr style="background: #fef3c7;">
+                    <th style="padding: 12px; text-align: left; font-weight: 600;">Judul Buku</th>
+                    <th style="padding: 12px; text-align: left; font-weight: 600;">Pengarang</th>
+                    <th style="padding: 12px; text-align: left; font-weight: 600;">Tanggal Pinjam</th>
+                    <th style="padding: 12px; text-align: left; font-weight: 600;">Tanggal Permintaan</th>
+                    <th style="padding: 12px; text-align: left; font-weight: 600;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $__currentLoopData = $pendingReturns; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $loan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr style="background: #fffbeb;">
+                    <td style="padding: 12px;"><strong><?php echo e($loan->book->name); ?></strong></td>
+                    <td style="padding: 12px;"><?php echo e($loan->book->author?->name ?? '-'); ?></td>
+                    <td style="padding: 12px;"><?php echo e($loan->loan_date->format('d M Y')); ?></td>
+                    <td style="padding: 12px;"><?php echo e($loan->return_request_date->format('d M Y')); ?></td>
+                    <td style="padding: 12px; color: #f59e0b; font-weight: 600;">Menunggu Persetujuan</td>
+                </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+
+    
     <div style="background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.05); border: 1px solid #e5e7eb;">
         <h3 style="margin: 0 0 12px; color: #0f172a; font-size: 15px; font-weight: 700; border-bottom: 2px solid #2563eb; padding-bottom: 8px;">
             Riwayat Peminjaman (<?php echo e($returnedLoans->total()); ?>)

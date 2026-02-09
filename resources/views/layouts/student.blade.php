@@ -343,8 +343,6 @@
 
 <body>
 
-{{-- PROFILE HEADER removed per request --}}
-
 <div style="display:flex; min-height:100vh">
 
     {{-- SIDEBAR --}}
@@ -361,6 +359,7 @@
             <li><a href="{{ route('student.books.index') }}">Kumpulan Buku</a></li>
             <li><a href="{{ route('student.loans.index') }}">Peminjaman</a></li>
             <li><a href="{{ route('student.fines.index') }}">Denda</a></li>
+            <li><a href="{{ route('student.reviews.index') }}">Rating / Review</a></li>
         </ul>
 
         <div class="logout-form">

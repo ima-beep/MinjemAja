@@ -343,8 +343,6 @@
 
 <body>
 
-
-
 <div style="display:flex; min-height:100vh">
 
     
@@ -361,6 +359,7 @@
             <li><a href="<?php echo e(route('student.books.index')); ?>">Kumpulan Buku</a></li>
             <li><a href="<?php echo e(route('student.loans.index')); ?>">Peminjaman</a></li>
             <li><a href="<?php echo e(route('student.fines.index')); ?>">Denda</a></li>
+            <li><a href="<?php echo e(route('student.reviews.index')); ?>">Rating / Review</a></li>
         </ul>
 
         <div class="logout-form">

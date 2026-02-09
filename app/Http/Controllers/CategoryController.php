@@ -10,12 +10,12 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::orderBy('name')->get();
-        return view('teacher.categories.index', compact('categories'));
+        return view('admin.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('teacher.categories.create');
+        return view('admin.categories.create');
     }
 
     public function store(Request $request)
@@ -26,12 +26,12 @@ class CategoryController extends Controller
         ]);
 
         Category::create($validated);
-        return redirect()->route('teacher.categories.index')->with('success', 'Kategori berhasil ditambahkan');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
     public function edit(Category $category)
     {
-        return view('teacher.categories.edit', compact('category'));
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -42,12 +42,12 @@ class CategoryController extends Controller
         ]);
 
         $category->update($validated);
-        return redirect()->route('teacher.categories.index')->with('success', 'Kategori berhasil diperbarui');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui');
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
-        return redirect()->route('teacher.categories.index')->with('success', 'Kategori berhasil dihapus');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus');
     }
 }
